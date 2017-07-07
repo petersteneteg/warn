@@ -1,0 +1,60 @@
+import re
+
+def header():
+	return "{:10} {:50} {:10} {}".format("Compiler", "Warning", "Version", "Description")
+
+
+class Warning:
+	def	__init__(self, compiler, name, version = None, desc = None):
+		self.compiler = compiler
+		self.name = name
+		self.desc = desc if desc != None else name
+		self.version = version
+
+	def __str__(self): 
+		return "{:10} {:30} {:10} {:50}".format(self.compiler, self.name, str(self.version), str(self.desc))
+
+class WarningSet:
+	def __init__(self, name, warnings):
+		self.name = name
+		self.warnings = warnings
+
+	def __str__(self): 
+		res = "{:30} : ".format(self.name)
+		for w in self.warnings:
+			res += "{0.compiler:5} {0.version:6} {0.name:30} ".format(w) 
+		return res
+
+def make_warning_set(parsers, name, clang_name, gcc_name, vs_name):
+	warnings = []
+
+	def add_warning(comp, w_name):
+		if w_name != "*no*":
+			if w_name == "*same*": 
+				w_name = name
+			if w_name in parsers[comp].warnings:
+				warnings.append(parsers[comp].warnings[w_name])
+
+	add_warning("clang", clang_name)
+	add_warning("gcc", gcc_name)
+	add_warning("vs", vs_name)
+
+	return WarningSet(name, warnings)
+
+def parse_warning_table(file, parsers):
+	warning_sets = {}
+	with open(file, "r") as f:
+		f.readline() # skip header
+		f.readline() # skip header
+		for line in f:
+			line_match = re.match("\s*(?P<name>\S+)\s*\|\s*(?P<clang>\S+)\s*\|\s*(?P<gcc>\S+)\s*\|\s*(?P<vs>\S+)\s*\|", line)
+			if line_match:
+				ws = make_warning_set(parsers, 
+					name = line_match.group("name"), 
+					clang_name = line_match.group("clang"), 
+					gcc_name = line_match.group("gcc"), 
+					vs_name = line_match.group("vs"))
+				if ws.name in warning_sets:
+					print("Error, duplicate warnings in: " + file)
+				warning_sets[ws.name] = ws
+	return warning_sets
