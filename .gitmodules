@@ -1,0 +1,3 @@
+[submodule "ext/barro"]
+	path = ext/barro
+	url = https://petersteneteg@github.com/Barro/compiler-warnings.git
