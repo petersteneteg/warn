@@ -32,3 +32,4 @@
 *.app
 __pycache__
 *.pyc
+output

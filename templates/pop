@@ -1,0 +1,15 @@
+#if !defined({prefix}WARN_INCLUDE_PUSH)
+#   error "'{path}/push' include not detected or already closed with other '{path}/pop'"
+#endif
+
+#undef {prefix}WARN_INCLUDE_PUSH
+
+#if defined(__clang__)
+#   pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#   pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+#   pragma warning(pop)
+#endif
+
+{undefs}

@@ -1,0 +1,13 @@
+#if defined({prefix}WARN_INCLUDE_PUSH)
+#   error "'{path}/push' already included; probably missing a '{path}/pop'"
+#endif
+
+#define {prefix}WARN_INCLUDE_PUSH
+
+#if defined(__clang__)
+#   pragma clang diagnostic push
+#elif defined(__GNUC__)
+#   pragma GCC diagnostic push
+#elif defined(_MSC_VER)
+#   pragma warning(push)
+#endif
