@@ -1,5 +1,5 @@
 #if defined({prefix}WARN_INCLUDE_PUSH)
-#   error "'{path}/push' already included; probably missing a '{path}/pop'"
+#   error "'{folder}/push' already included; probably missing a '{folder}/pop'"
 #endif
 
 #define {prefix}WARN_INCLUDE_PUSH

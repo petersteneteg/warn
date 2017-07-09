@@ -1,5 +1,6 @@
 import re
 
+# Templates:
 # Ref: http://nadeausoftware.com/articles/2012/10/c_c_tip_how_detect_compiler_name_and_version_using_compiler_predefined_macros
 
 clang_warning = \
@@ -36,9 +37,6 @@ template = \
 {vs}
 #endif
 """.strip()
-
-def header():
-	return "{:10} {:50} {:10} {}".format("Compiler", "Warning", "Version", "Description")
 
 
 class Warning:

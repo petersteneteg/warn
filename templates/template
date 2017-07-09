@@ -1,9 +1,9 @@
 #if !defined({prefix}WARN_INCLUDE_PUSH)
-#   error "`{path}/{ignore}/{name}` used without `{path}/push`"
+#   error "`{folder}/{ignore}/{name}` used without `{folder}/push`"
 #endif
 
 #if defined({prefix}{guard})
-#   error "`{path}/{ignore}/{name}` already included"
+#   error "`{folder}/{ignore}/{name}` already included"
 #endif
 
 #define {prefix}{guard}
