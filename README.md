@@ -45,11 +45,8 @@ switch(val) {
 #endif
 ```
 
-
-## Tool Usage
-
+### Tool Usage
 ```
-## Tool Usage
 usage: warn [-h] [-w TABLE] [-e TABLE [TABLE ...]] [-o DIR]
             [--folder_name NAME] [--ignore_name NAME] [--prefix STR]
             [--header FILE] [--templates DIR] [--gcc_warnings DIR]
