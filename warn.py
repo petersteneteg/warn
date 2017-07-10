@@ -10,6 +10,9 @@ import warn.parser
 def sdir():
 	return os.path.dirname(os.path.realpath(__file__))
 
+def toMacro(string):
+	return string.upper().replace('-','_').replace('+', 'X')
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(prog="warn", formatter_class=argparse.RawDescriptionHelpFormatter,
 		description=textwrap.dedent('''
@@ -82,7 +85,7 @@ if __name__ == '__main__':
 	with open(args.templates + "/template", "r") as f:
 		template = f.read()
 		for name, w in table.items():
-			guard_str = "WARN_IGNORE_" + name.upper().replace("-","_")
+			guard_str = "WARN_IGNORE_" + toMacro(name)
 			contents = header + template.format(
 				folder = args.folder_name, 
 				ignore = args.ignore_name, 
@@ -106,7 +109,7 @@ if __name__ == '__main__':
 	# Generate pop
 	with open(args.templates + "/pop", "r") as f:
 		pop_template = f.read()
-		undefs = "\n".join([args.prefix + "#undef WARN_IGNORE_" + name.upper().replace("-","_") for name in table.keys()])
+		undefs = "\n".join([args.prefix + "#undef WARN_IGNORE_" + toMacro(name) for name in table.keys()])
 		contents = header + pop_template.format(prefix = args.prefix, folder = args.folder_name, undefs = undefs)
 		with open(warn_dir + "/pop", "w") as o: o.write(contents)
 
