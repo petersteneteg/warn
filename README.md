@@ -1,6 +1,6 @@
 # C++ Compiler warning pragmas for Clang, GCC, and Visual Studio
 
-warn.py is a small python untility to generate include files for warning pragmas. The main idea is from [ruslo](https://github.com/ruslo/sugar/wiki/Cross-platform-warning-suppression). The include file contains pragmas for Clang, GCC, and Visual Studio. The Script parses files from [Barro's compiler-warnings](https://github.com/Barro/compiler-warnings) and [Microsoft](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/) to figure out which compiler version that added which warning, and adds the corresponding checks in the files. The script parses a table [warnings.md](warnings.md) to decide which warnings to generate files for and how to name them.
+warn.py is a small python3 untility to generate include files for warning pragmas. The main idea is from [ruslo](https://github.com/ruslo/sugar/wiki/Cross-platform-warning-suppression). The include file contains pragmas for Clang, GCC, and Visual Studio. The script parses a table [warnings.md](warnings.md) to decide which warnings to generate files for and how to name them. The Script parses files from [Barro's compiler-warnings](https://github.com/Barro/compiler-warnings) and [Microsoft](https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/) to figure out which compiler version that added which warning, and adds the corresponding checks in the files.
 
 ### Example usage
 ```
@@ -54,7 +54,7 @@ usage: warn [-h] [-w TABLE] [-e TABLE [TABLE ...]] [-o DIR]
 
 Generate warning files
 Default directory structure:
-    output/                (output dir)
+    output/                (output_dir)
         warn/              (folder_name)
             ignore/        (ignore_name)
                 all        (ignore all warnings)
