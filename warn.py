@@ -2,36 +2,50 @@ import os
 import argparse
 import glob
 import re
+import textwrap
 
 import warn.warning
 import warn.parser
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser(description="Generate warning include files")
-	parser.add_argument("-t", "--templates", type=str, dest="templates", default="templates",
-						help="Template directory")
-	parser.add_argument("-w", "--warnings", type=str, dest="warnings", default="warnings.md",
-						help="Warnings Table")
-	parser.add_argument("-e", "--extra_warnings", type=str, dest="extra_warnings", nargs="*", default=[],
-						help="Extra Warning Tables")
+	parser = argparse.ArgumentParser(prog="warn", formatter_class=argparse.RawDescriptionHelpFormatter,
+		description=textwrap.dedent('''
+			Generate warning files
+			Default directory structure:
+			    output/                (output_dir)
+			        warn/              (folder_name)
+			            ignore/        (ignore_name)
+			                all        (ignore all warnings)
+			                warning1   (first name from warning table)
+			                warning2   (second name from warning table)
+			                ...        (etc for all name in table)
+			            push           (push pragma state)
+			            pop            (pop pragma state)
+		'''))
+	parser.add_argument("-w", "--warnings", type=str, dest="warnings", default="warnings.md", 
+						metavar="TABLE", help="warning table file (default: '%(default)s')")
+	parser.add_argument("-e", "--extra_warnings", type=str, dest="extra_warnings", nargs="+", default=[],
+						metavar="TABLE", help="extra warning table files")
 
 	parser.add_argument("-o", "--output_dir", type=str, dest="output_dir", default="output",
-						help="Output destination")
-	parser.add_argument("-f", "--folder_name", type=str, dest="folder_name", default="warn",
-						help="Base folder name")
-	parser.add_argument("-i", "--ignore_name", type=str, dest="ignore_name", default="ignore",
-						help="Ignore folder name")
-	parser.add_argument("-x", "--prefix", type=str, dest="prefix", default="",
-						help="Include guard prefix")
+						metavar="DIR", help="output destination (default: '%(default)s')")
+	parser.add_argument("--folder_name", type=str, dest="folder_name", default="warn",
+						metavar="NAME", help="base folder name (default: '%(default)s')")
+	parser.add_argument("--ignore_name", type=str, dest="ignore_name", default="ignore",
+						metavar="NAME", help="ignore folder name (default: '%(default)s')")
+	parser.add_argument("--prefix", type=str, dest="prefix", default="",
+						metavar="STR", help="include guard prefix (default: '%(default)s')")
 	parser.add_argument("--header", type=str, dest="header", default=None,
-						help="Optional header file to include at start of each file")
-	
-	parser.add_argument("-g", "--gcc_warnings", type=str, dest="gcc_warnings", default="ext/barro/gcc",
-						help="GCC Warnings directory")
-	parser.add_argument("-c", "--clang_warnings", type=str, dest="clang_warnings", default="ext/barro/clang",
-						help="Clang Warnings directory")
-	parser.add_argument("-v", "--vs_warnings", type=str, dest="vs_warnings", default="ext/VS",
-						help="VS Warnings directory")
+						metavar = "FILE", help="optional header file to include at start of each file")
+
+	parser.add_argument("--templates", type=str, dest="templates", default="templates",
+						metavar="DIR", help="template directory, should contain a 'template', 'push', and 'pop' file (default: '%(default)s')")
+	parser.add_argument("--gcc_warnings", type=str, dest="gcc_warnings", default="ext/barro/gcc",
+						metavar="DIR", help="GCC warnings directory (default: '%(default)s')")
+	parser.add_argument("--clang_warnings", type=str, dest="clang_warnings", default="ext/barro/clang",
+						metavar="DIR", help="Clang warnings directory (default: '%(default)s')")
+	parser.add_argument("--vs_warnings", type=str, dest="vs_warnings", default="ext/VS",
+						metavar="DIR", help="VS warnings directory (default: '%(default)s')")
 
 	args = parser.parse_args()
 
