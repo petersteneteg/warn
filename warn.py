@@ -7,6 +7,9 @@ import textwrap
 import warn.warning
 import warn.parser
 
+def sdir():
+	return os.path.dirname(os.path.realpath(__file__))
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(prog="warn", formatter_class=argparse.RawDescriptionHelpFormatter,
 		description=textwrap.dedent('''
@@ -22,7 +25,7 @@ if __name__ == '__main__':
 			            push           (push pragma state)
 			            pop            (pop pragma state)
 		'''))
-	parser.add_argument("-w", "--warnings", type=str, dest="warnings", default="warnings.md", 
+	parser.add_argument("-w", "--warnings", type=str, dest="warnings", default= sdir() + "/warnings.md", 
 						metavar="TABLE", help="warning table file (default: '%(default)s')")
 	parser.add_argument("-e", "--extra_warnings", type=str, dest="extra_warnings", nargs="+", default=[],
 						metavar="TABLE", help="extra warning table files")
@@ -38,13 +41,13 @@ if __name__ == '__main__':
 	parser.add_argument("--header", type=str, dest="header", default=None,
 						metavar = "FILE", help="optional header file to include at start of each file")
 
-	parser.add_argument("--templates", type=str, dest="templates", default="templates",
+	parser.add_argument("--templates", type=str, dest="templates", default=sdir() + "/templates",
 						metavar="DIR", help="template directory, should contain a 'template', 'push', and 'pop' file (default: '%(default)s')")
-	parser.add_argument("--gcc_warnings", type=str, dest="gcc_warnings", default="ext/barro/gcc",
+	parser.add_argument("--gcc_warnings", type=str, dest="gcc_warnings", default=sdir() + "/ext/barro/gcc",
 						metavar="DIR", help="GCC warnings directory (default: '%(default)s')")
-	parser.add_argument("--clang_warnings", type=str, dest="clang_warnings", default="ext/barro/clang",
+	parser.add_argument("--clang_warnings", type=str, dest="clang_warnings", default=sdir() + "/ext/barro/clang",
 						metavar="DIR", help="Clang warnings directory (default: '%(default)s')")
-	parser.add_argument("--vs_warnings", type=str, dest="vs_warnings", default="ext/VS",
+	parser.add_argument("--vs_warnings", type=str, dest="vs_warnings", default=sdir() + "/ext/VS",
 						metavar="DIR", help="VS warnings directory (default: '%(default)s')")
 
 	args = parser.parse_args()
