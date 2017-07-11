@@ -25,8 +25,9 @@ if __name__ == '__main__':
 			                warning1   (first name from warning table)
 			                warning2   (second name from warning table)
 			                ...        (etc for all name in table)
-			            push           (push pragma state)
 			            pop            (pop pragma state)
+			            push           (push pragma state)
+			            warnings.md    (summery table of all warnings)
 		'''))
 	parser.add_argument("-w", "--warnings", type=str, dest="warnings", default= sdir() + "/warnings.md", 
 						metavar="TABLE", help="warning table file (default: '%(default)s')")
@@ -112,5 +113,27 @@ if __name__ == '__main__':
 		undefs = "\n".join([args.prefix + "#undef WARN_IGNORE_" + toMacro(name) for name in table.keys()])
 		contents = header + pop_template.format(prefix = args.prefix, folder = args.folder_name, undefs = undefs)
 		with open(warn_dir + "/pop", "w") as o: o.write(contents)
+
+	# Generate table
+	with open(warn_dir + "/warnings.md", "w") as o:
+		cols = ["name", "clang", "gcc", "vs"]
+		rows = []
+		for name, ws in sorted(table.items(), key=lambda x: x[0]):
+			wd = {i : "*no*" for i in cols}
+			wd["name"] = name
+			for w in ws.warnings:
+				wd[w.compiler] = ("*same*" if w.name == name else w.name) + " (" + str(w.version) + ")"
+			rows.append(wd)
+
+		widths = {i : 0 for i in cols}
+		for r in rows:
+			for c in cols:
+				widths[c] = max(widths[c], len(r[c]))
+
+		f = " | ".join(["{{{name}:<{width}}}".format(name = name, width=widths[name]) for name in cols]) + "\n"
+		o.write(f.format(name="Name", clang="Clang", gcc="GCC", vs = "VS"))
+		o.write(f.format(**{name : "-"*widths[name] for name in cols}))
+		for row in rows:
+			o.write(f.format(**row)) 
 
 
