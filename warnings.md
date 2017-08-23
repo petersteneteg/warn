@@ -47,6 +47,7 @@ int-conversion                        | *same*       | *no*             | *no*  
 invalid-offsetof                      | *same*       | *same*           | *no*  |
 is-defined-to-be                      | *no*         | *no*             | C4574 |
 layout-changed                        | *no*         | *no*             | C4371 |
+misleading-indentation                | *no*         | *same*           | *no*  |
 missing-braces                        | *same*       | *same*           | *no*  |
 missing-field-initializers            | *same*       | *same*           | *no*  |
 missing-noreturn                      | *same*       | *same*           | *no*  |
