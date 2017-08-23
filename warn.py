@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
 	# Generate igmore all
 	with open(ignore_dir + "/all", "w") as o: 
-		contents = header + "\n".join(["#include <" + args.folder_name + "/" + args.ignore_name + "/" +  name + ">" for name in table.keys()])
+		contents = header + "\n".join(["#include <" + args.folder_name + "/" + args.ignore_name + "/" +  name + ">" for name in sorted(table.keys())])
 		o.write(contents)
 
 	# Generate push
@@ -110,7 +110,7 @@ if __name__ == '__main__':
 	# Generate pop
 	with open(args.templates + "/pop", "r") as f:
 		pop_template = f.read()
-		undefs = "\n".join([args.prefix + "#undef WARN_IGNORE_" + toMacro(name) for name in table.keys()])
+		undefs = "\n".join([args.prefix + "#undef WARN_IGNORE_" + toMacro(name) for name in sorted(table.keys())])
 		contents = header + pop_template.format(prefix = args.prefix, folder = args.folder_name, undefs = undefs)
 		with open(warn_dir + "/pop", "w") as o: o.write(contents)
 
