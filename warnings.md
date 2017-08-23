@@ -50,7 +50,7 @@ layout-changed                        | *no*         | *no*             | C4371 
 missing-braces                        | *same*       | *same*           | *no*  |
 missing-field-initializers            | *same*       | *same*           | *no*  |
 missing-noreturn                      | *same*       | *same*           | *no*  |
-missing-prototypes                    | *same*       | *same*           | *no*  |
+missing-prototypes                    | *same*       | *no*             | *no*  |
 name-length-exceeded                  | *no*         | *no*             | C4503 |
 newline-eof                           | *same*       | *no*             | *no*  |
 no-such-warning                       | *no*         | *no*             | C4619 |
@@ -62,7 +62,7 @@ overloaded-virtual                    | *same*       | *same*           | *no*  
 padded                                | *same*       | *same*           | C4820 |
 parentheses                           | *same*       | *same*           | *no*  |
 pedantic                              | *same*       | *same*           | *no*  |
-pointer-sign                          | *same*       | *same*           | *no*  |
+pointer-sign                          | *same*       | *no*             | *no*  |
 return-type                           | *same*       | *same*           | *no*  |
 shadow                                | *same*       | *same*           | *no*  |
 shift-sign-overflow                   | *same*       | *no*             | *no*  |
