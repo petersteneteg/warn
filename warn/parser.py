@@ -16,6 +16,8 @@ class BaseWarningParser(WarningParser):
 		WarningParser.__init__(self, compiler, path)
 
 	def parse_warning_files(self, files):
+		if not files:
+		    print("Warning, no files for %s in %s" % (self.compiler, self.path))
 		warndict = {}
 		for file in files:
 			match = re.match(".*warnings-.*-(\d+(\.\d+)?)\.txt", file)
