@@ -82,7 +82,7 @@ class VSWarningParser(WarningParser):
 		for file in files:
 			with open(file, 'r') as f:
 				for line in f:
-					warning_match = re.match("\|\[?Compiler [Ww]arning( \(.*\))? (C\d+)(\]\(.*\))?\|(.*)\|", line)
+					warning_match = re.match("\|\[?Compiler [Ww]arning ?(\(.*\))? ?(C\d+)(\]\(.*\))?.*\|(.*)\|", line)
 					if warning_match:
 						name = warning_match.group(2)
 						desc = warning_match.group(4)

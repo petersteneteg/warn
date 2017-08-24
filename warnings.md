@@ -25,7 +25,6 @@ deprecated-register                   | *same*       | *no*             | *no*  
 dflt-ctor-base-inaccessible           | *no*         | *no*             | C4623 |
 dflt-ctor-could-not-be-generated      | *no*         | *no*             | C4510 |
 digraphs-not-supported                | *no*         | *no*             | C4628 |
-disabled-macro-expansion              | *same*       | *no*             | *no*  |
 dll-interface                         | *no*         | *no*             | C4251 |
 dll-interface-base                    | *no*         | *no*             | C4275 |
 documentation                         | *same*       | *no*             | *no*  |
@@ -51,7 +50,6 @@ misleading-indentation                | *no*         | *same*           | *no*  
 missing-braces                        | *same*       | *same*           | *no*  |
 missing-field-initializers            | *same*       | *same*           | *no*  |
 missing-noreturn                      | *same*       | *same*           | *no*  |
-missing-prototypes                    | *same*       | *no*             | *no*  |
 name-length-exceeded                  | *no*         | *no*             | C4503 |
 newline-eof                           | *same*       | *no*             | *no*  |
 no-such-warning                       | *no*         | *no*             | C4619 |
@@ -63,10 +61,8 @@ overloaded-virtual                    | *same*       | *same*           | *no*  
 padded                                | *same*       | *same*           | C4820 |
 parentheses                           | *same*       | *same*           | *no*  |
 pedantic                              | *same*       | *same*           | *no*  |
-pointer-sign                          | *same*       | *no*             | *no*  |
 return-type                           | *same*       | *same*           | *no*  |
 shadow                                | *same*       | *same*           | *no*  |
-shift-sign-overflow                   | *same*       | *no*             | *no*  |
 shorten-64-to-32                      | *same*       | *no*             | *no*  |
 sign-compare                          | *same*       | *same*           | C4389 |
 sign-conversion                       | *same*       | *same*           | C4365 |
@@ -90,4 +86,3 @@ unused-value                          | *same*       | *same*           | C4555 
 unused-variable                       | *same*       | *same*           | C4189 |
 used-but-marked-unused                | *same*       | *no*             | *no*  |
 user-ctor-required                    | *no*         | *no*             | C4610 |
-weak-vtables                          | *same*       | *no*             | *no*  |
