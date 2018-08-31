@@ -71,7 +71,7 @@ static-ctor-not-thread-safe           | *no*         | *no*             | C4640 
 switch                                | *same*       | *same*           | C4062 |
 switch-enum                           | *same*       | *same*           | C4061 |
 this-used-in-init                     | *no*         | *no*             | C4355 |
-undef                                 | *same*       | *same*           | C4668 |
+undef                                 | *no*         | *same*           | C4668 |
 uninitialized                         | *same*       | *same*           | *no*  |
 unknown-pragmas                       | *same*       | *same*           | *no*  |
 unreachable-code                      | *same*       | *same*           | C4702 |

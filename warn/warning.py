@@ -83,8 +83,11 @@ def make_warning_set(parsers, name, clang_name, gcc_name, vs_name):
 		if w_name != "*no*":
 			if w_name == "*same*": 
 				w_name = name
-			if w_name in parsers[comp].warnings:
-				warnings.append(parsers[comp].warnings[w_name])
+			found, warning = parsers[comp].try_get_warning(w_name)
+			if found: 
+				warnings.append(warning)
+			else:
+				print("Warning: Could not match warning: \"" + w_name + "\" for " + comp)
 
 	add_warning("clang", clang_name)
 	add_warning("gcc", gcc_name)

@@ -15,6 +15,12 @@ class BaseWarningParser(WarningParser):
 	def __init__(self, compiler, path):
 		WarningParser.__init__(self, compiler, path)
 
+	def try_get_warning(self, name):
+		if name in self.warnings:
+			return True, self.warnings[name]
+		else:
+			return False, None
+
 	def parse_warning_files(self, files):
 		if not files:
 		    print("Warning, no files for %s in %s" % (self.compiler, self.path))
@@ -60,6 +66,14 @@ class VSWarningParser(WarningParser):
 		WarningParser.__init__(self, compiler, path)
 		self.warnings = self.parse_vs_warnings(self.path)
 
+	def try_get_warning(self, name):
+		if name in self.warnings:
+			return True, self.warnings[name]
+		elif re.match("C2\d\d\d\d", name): # c++ core guideline check
+			return True, warning.Warning(self.compiler, name, Version("15"), name)
+		else:
+			return False, None
+
 	def parse_vs_warnings_versions(self, file):
 		warndict = {}
 		version  = Version("0")
@@ -89,5 +103,17 @@ class VSWarningParser(WarningParser):
 						name = warning_match.group(2)
 						desc = warning_match.group(4)
 						if name not in warndict:
-							warndict[name] = warning.Warning(self.compiler, name, Version("13"), desc) # We guess that they have been there a long time.
+							# We guess that they have been there a long time.
+							warndict[name] = warning.Warning(self.compiler, name, Version("13"), desc) 
+
+		cppcheck2 =  warning_dir + "/CoreCheckers.md"
+		with open(cppcheck2, 'r') as f:
+			for line in f:
+				warning_match = re.match("\s*WARNING_(\S+)\s*=\s*(\d{5}).*", line)
+				if warning_match:
+					name = "C" + warning_match.group(2)
+					desc = warning_match.group(2).lower()
+					# don't have a version for the CPP-check stuff, put it in 2017...
+					warndict[name] = warning.Warning(self.compiler, name, Version("15"), desc)
+
 		return warndict
