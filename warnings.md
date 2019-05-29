@@ -84,7 +84,6 @@ switch                                | *same*       | *same*           | C4062 
 switch-enum                           | *same*       | *same*           | C4061  |
 this-used-in-init                     | *no*         | *no*             | C4355  |
 undef                                 | *no*         | *same*           | C4668  |
-uninitialized                         | *same*       | *same*           | *no*   |
 uninitialized                         | *same*       | *same*           | C4701  |
 unknown-pragmas                       | *same*       | *same*           | *no*   |
 unreachable-code                      | *same*       | *same*           | C4702  |
