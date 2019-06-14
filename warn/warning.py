@@ -5,7 +5,7 @@ import re
 
 clang_warning = \
 """
-#   if __clang_major__ > {clang_major} || (__clang_major__ == {clang_major}  && __clang_minor__ > {clang_minor})
+#   if __clang_major__ > {clang_major} || (__clang_major__ == {clang_major}  && __clang_minor__ >= {clang_minor})
 #       if __has_warning("-W{name}")
 #           pragma clang diagnostic ignored "-W{name}"
 #       endif
@@ -14,7 +14,7 @@ clang_warning = \
 
 gcc_warning = \
 """
-#   if __GNUC__ > {gcc_major} || (__GNUC__ == {gcc_major}  && __GNUC_MINOR__ > {gcc_minor})
+#   if __GNUC__ > {gcc_major} || (__GNUC__ == {gcc_major}  && __GNUC_MINOR__ >= {gcc_minor})
 #       pragma GCC diagnostic ignored "-W{name}"
 #   endif
 """.strip()
