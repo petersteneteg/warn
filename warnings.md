@@ -22,10 +22,12 @@ conversion-sign-extended              | *no*         | *no*             | C4826 
 copy-ctor-could-not-be-generated      | *no*         | *no*             | C4625  |
 covered-switch-default                | *same*       | *no*             | *no*   |
 deprecated                            | *same*       | *same*           | *no*   |
+deprecated-copy                       | *no*         | *same*           | *no*   |
+deprecated-copy-dtor                  | *no*         | *same*           | *no*   |
 deprecated-declarations               | *same*       | *same*           | C4996  |
 deprecated-objc-isa-usage             | *same*       | *no*             | *no*   |
 deprecated-register                   | *same*       | *no*             | *no*   |
-dflt-ctor-base-inaccessible           | *no*         | *no*             | C4623  | 
+dflt-ctor-base-inaccessible           | *no*         | *no*             | C4623  |
 dflt-ctor-could-not-be-generated      | *no*         | *no*             | C4510  |
 digraphs-not-supported                | *no*         | *no*             | C4628  |
 dll-interface                         | *no*         | *no*             | C4251  |
@@ -61,7 +63,6 @@ missing-noreturn                      | *same*       | *same*           | *no*  
 name-length-exceeded                  | *no*         | *no*             | C4503  |
 namespace-uses-itself                 | *no*         | *no*             | C4515  |
 newline-eof                           | *same*       | *no*             | *no*   |
-no-deprecated-copy                    | *no*         | *same*           | *no*   |
 no-such-warning                       | *no*         | *no*             | C4619  |
 no-unnamed-raii-objects               | *no*         | *no*             | C26444 |
 non-virtual-dtor                      | *same*       | *same*           | C4265  |

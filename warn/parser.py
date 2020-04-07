@@ -31,7 +31,7 @@ class BaseWarningParser(WarningParser):
 				version = Version(match.group(1))
 				with open(file, 'r') as f:
 					for line in f:
-						line = line.strip()
+						line = line.split("#")[0].strip()
 						dummy = re.match(".*DUMMY.*", line)
 						if dummy: continue
 
