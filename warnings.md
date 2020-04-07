@@ -59,7 +59,9 @@ missing-braces                        | *same*       | *same*           | *no*  
 missing-field-initializers            | *same*       | *same*           | *no*   |
 missing-noreturn                      | *same*       | *same*           | *no*   |
 name-length-exceeded                  | *no*         | *no*             | C4503  |
+namespace-uses-itself                 | *no*         | *no*             | C4515  |
 newline-eof                           | *same*       | *no*             | *no*   |
+no-deprecated-copy                    | *no*         | *same*           | *no*   |
 no-such-warning                       | *no*         | *no*             | C4619  |
 no-unnamed-raii-objects               | *no*         | *no*             | C26444 |
 non-virtual-dtor                      | *same*       | *same*           | C4265  |
