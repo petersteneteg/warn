@@ -26,7 +26,7 @@ class BaseWarningParser(WarningParser):
 		    print("Warning, no files for %s in %s" % (self.compiler, self.path))
 		warndict = {}
 		for file in files:
-			match = re.match(".*warnings-.*-(\d+(\.\d+)?)\.txt", file)
+			match = re.match(r".*warnings-.*-(\d+(\.\d+)?)\.txt", file)
 			if match:
 				version = Version(match.group(1))
 				with open(file, 'r') as f:
@@ -69,7 +69,7 @@ class VSWarningParser(WarningParser):
 	def try_get_warning(self, name):
 		if name in self.warnings:
 			return True, self.warnings[name]
-		elif re.match("C2\d\d\d\d", name): # c++ core guideline check
+		elif re.match(r"C2\d\d\d\d", name): # c++ core guideline check
 			return True, warning.Warning(self.compiler, name, Version("15"), name)
 		else:
 			return False, None
@@ -79,10 +79,10 @@ class VSWarningParser(WarningParser):
 		version  = Version("0")
 		with open(file, 'r') as f:
 			for line in f:
-				version_match = re.match(".*__\/Wv:([\d.]+)__.", line)
+				version_match = re.match(r"These warnings.*`\/Wv:([\d.]+)`.", line)
 				if version_match:
 					version  = Version(version_match.group(1))
-				warning_match = re.match("(C[\d]+)\|(.*)", line)
+				warning_match = re.match(r"\|\s*(C\d+)\s*\|\s*`(.*)`", line)
 				if warning_match:
 					name = warning_match.group(1)
 					desc = warning_match.group(2)
@@ -98,7 +98,7 @@ class VSWarningParser(WarningParser):
 		for file in files:
 			with open(file, 'r') as f:
 				for line in f:
-					warning_match = re.match("\|\[?Compiler [Ww]arning ?(\(.*\))? ?(C\d+)(\]\(.*\))?.*\|(.*)\|", line)
+					warning_match = re.match(r"\|\[?Compiler [Ww]arning ?(\(.*\))? ?(C\d+)(\]\(.*\))?.*\|(.*)\|", line)
 					if warning_match:
 						name = warning_match.group(2)
 						desc = warning_match.group(4)
@@ -109,7 +109,7 @@ class VSWarningParser(WarningParser):
 		cppcheck2 =  warning_dir + "/CoreCheckers.md"
 		with open(cppcheck2, 'r') as f:
 			for line in f:
-				warning_match = re.match("\s*WARNING_(\S+)\s*=\s*(\d{5}).*", line)
+				warning_match = re.match(r"\s*WARNING_(\S+)\s*=\s*(\d{5}).*", line)
 				if warning_match:
 					name = "C" + warning_match.group(2)
 					desc = warning_match.group(2).lower()
