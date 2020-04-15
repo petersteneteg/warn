@@ -94,12 +94,21 @@ if __name__ == '__main__':
 				prefix = args.prefix, 
 				guard = guard_str,
 				contents = w.format())
-			with open(ignore_dir + "/" + name, "w") as o: o.write(contents)
+			with open(ignore_dir + "/" + name, "w") as o: 
+				o.write(contents)
 
 	# Generate igmore all
-	with open(ignore_dir + "/all", "w") as o: 
-		contents = header + "\n".join(["#include <" + args.folder_name + "/" + args.ignore_name + "/" +  name + ">" for name in sorted(table.keys())])
-		o.write(contents)
+	with open(args.templates + "/template", "r") as f:
+		template = f.read()
+		contents = header + template.format(
+				folder = args.folder_name, 
+				ignore = args.ignore_name, 
+				name = "ALL", 
+				prefix = args.prefix, 
+				guard = guard_str,
+				contents = "\n".join("// {}\n{}\n".format(n, w.format()) for n, w in table.items()))
+		with open(ignore_dir + "/all", "w") as o: 
+			o.write(contents)
 
 	# Generate push
 	with open(args.templates + "/push", "r") as f:
