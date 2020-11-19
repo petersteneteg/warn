@@ -1,4 +1,5 @@
 import re
+import itertools
 
 # Templates:
 # Ref: http://nadeausoftware.com/articles/2012/10/c_c_tip_how_detect_compiler_name_and_version_using_compiler_predefined_macros
@@ -26,6 +27,15 @@ vs_warning = \
 #   endif
 """.strip()
 
+clang_all = """
+#    pragma clang diagnostic ignored "-Weverything"
+""".strip()
+
+gcc_all = """
+#    pragma GCC diagnostic ignored "-Wall"
+#    pragma GCC diagnostic ignored "-Wextra"
+""".strip()
+
 # Order is important, clang also defines __GNUC__
 template = \
 """
@@ -37,7 +47,6 @@ template = \
 {vs}
 #endif
 """.strip()
-
 
 class Warning:
 	def	__init__(self, compiler, name, version = None, desc = None):
@@ -71,13 +80,13 @@ class WarningSet:
 
 	def format(self):
 		strs = {"clang" : "//  Not available", "gcc" : "//  Not available", "vs" : "//  Not available"}
-		for w in self.warnings:
+		for comp, w in self.warnings.items():
 			strs[w.compiler] = w.format()
 		return template.format(**strs)
 
 
 def make_warning_set(parsers, name, clang_name, gcc_name, vs_name):
-	warnings = []
+	warnings = {}
 
 	def add_warning(comp, w_name):
 		if w_name != "*no*":
@@ -85,7 +94,7 @@ def make_warning_set(parsers, name, clang_name, gcc_name, vs_name):
 				w_name = name
 			found, warning = parsers[comp].try_get_warning(w_name)
 			if found: 
-				warnings.append(warning)
+				warnings[comp] = warning
 			else:
 				print("Warning: Could not match warning: \"" + w_name + "\" for " + comp)
 
@@ -112,3 +121,20 @@ def parse_warning_table(file, parsers):
 					print("Error, duplicate warnings in: " + file)
 				warning_sets[ws.name] = ws
 	return warning_sets
+
+def vs_all(table):
+	def partition(x, n):
+		y = list(x)
+		return ((y[i:i+n] for i in range(0, len(y), n)))
+	vs = [x.warnings['vs'] for n,x in table.items() if 'vs' in x.warnings.keys()]
+	vs.sort(key=lambda w: w.version)
+	def gen():
+		for version, warnings in itertools.groupby(vs, key=lambda w:w.version):
+			verstr = ''.join(str(i) for i in version.version)
+			res = f"#    if (_MSC_FULL_VER >= {verstr:0<9})\n"
+			for sublist in partition(warnings, 13):
+				names = ' '.join(i.name[1:] for i in sublist)
+				res += f"#        pragma warning(disable: {names})\n"
+			res += "#    endif"
+			yield res
+	return '\n'.join(gen())

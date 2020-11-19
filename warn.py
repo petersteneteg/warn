@@ -103,10 +103,13 @@ if __name__ == '__main__':
 		contents = header + template.format(
 				folder = args.folder_name, 
 				ignore = args.ignore_name, 
-				name = "ALL", 
+				name = "all", 
 				prefix = args.prefix, 
-				guard = guard_str,
-				contents = "\n".join("// {}\n{}\n".format(n, w.format()) for n, w in table.items()))
+				guard = "WARN_IGNORE_ALL",
+				contents = warn.warning.template.format(
+					vs=warn.warning.vs_all(table), 
+					clang=warn.warning.clang_all, 
+					gcc=warn.warning.gcc_all))
 		with open(ignore_dir + "/all", "w") as o: 
 			o.write(contents)
 
@@ -130,8 +133,8 @@ if __name__ == '__main__':
 		for name, ws in sorted(table.items(), key=lambda x: x[0]):
 			wd = {i : "*no*" for i in cols}
 			wd["name"] = name
-			for w in ws.warnings:
-				wd[w.compiler] = ("*same*" if w.name == name else w.name) + " (" + str(w.version) + ")"
+			for c, w in ws.warnings.items():
+				wd[c] = ("*same*" if w.name == name else w.name) + " (" + str(w.version) + ")"
 			rows.append(wd)
 
 		widths = {i : 0 for i in cols}
