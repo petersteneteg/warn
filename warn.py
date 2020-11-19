@@ -109,7 +109,7 @@ if __name__ == '__main__':
 				contents = warn.warning.template.format(
 					vs=warn.warning.vs_all(table), 
 					clang=warn.warning.clang_all, 
-					gcc=warn.warning.gcc_all))
+					gcc=warn.warning.gcc_all(table)))
 		with open(ignore_dir + "/all", "w") as o: 
 			o.write(contents)
 

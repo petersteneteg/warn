@@ -31,11 +31,6 @@ clang_all = """
 #    pragma clang diagnostic ignored "-Weverything"
 """.strip()
 
-gcc_all = """
-#    pragma GCC diagnostic ignored "-Wall"
-#    pragma GCC diagnostic ignored "-Wextra"
-""".strip()
-
 # Order is important, clang also defines __GNUC__
 template = \
 """
@@ -135,6 +130,20 @@ def vs_all(table):
 			for sublist in partition(warnings, 13):
 				names = ' '.join(i.name[1:] for i in sublist)
 				res += f"#        pragma warning(disable: {names})\n"
+			res += "#    endif"
+			yield res
+	return '\n'.join(gen())
+
+def gcc_all(table):
+	gcc = [x.warnings['gcc'] for n,x in table.items() if 'gcc' in x.warnings.keys()]
+	gcc.sort(key=lambda w: w.version)
+	def gen():
+		for version, warnings in itertools.groupby(gcc, key=lambda w: w.version):
+			v = version.version
+			res = "#    if __GNUC__ > {major} || (__GNUC__ == {major}  && __GNUC_MINOR__ >= {minor})\n"
+			res = res.format(major = v[0], minor=(v[1] if len(v) >= 2 else 0))
+			for w in warnings:
+				res += f"#        pragma GCC diagnostic ignored \"-W{w.name}\"\n"
 			res += "#    endif"
 			yield res
 	return '\n'.join(gen())
