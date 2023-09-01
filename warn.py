@@ -3,12 +3,13 @@ import argparse
 import glob
 import re
 import textwrap
+from pathlib import Path
 
 import warn.warning
 import warn.parser
 
 def sdir():
-	return os.path.dirname(os.path.realpath(__file__))
+	return Path(os.path.dirname(os.path.realpath(__file__)))
 
 def toMacro(string):
 	return string.upper().replace('-','_').replace('+', 'X')
@@ -29,12 +30,12 @@ if __name__ == '__main__':
 			            push           (push pragma state)
 			            warnings.md    (summery table of all warnings)
 		'''))
-	parser.add_argument("-w", "--warnings", type=str, dest="warnings", default= sdir() + "/warnings.md", 
+	parser.add_argument("-w", "--warnings", type=Path, dest="warnings", default= sdir() / "warnings.md", 
 						metavar="TABLE", help="warning table file (default: '%(default)s')")
-	parser.add_argument("-e", "--extra_warnings", type=str, dest="extra_warnings", nargs="+", default=[],
+	parser.add_argument("-e", "--extra_warnings", type=Path, dest="extra_warnings", nargs="+", default=[],
 						metavar="TABLE", help="extra warning table files")
 
-	parser.add_argument("-o", "--output_dir", type=str, dest="output_dir", default="output",
+	parser.add_argument("-o", "--output_dir", type=Path, dest="output_dir", default="output",
 						metavar="DIR", help="output destination (default: '%(default)s')")
 	parser.add_argument("--folder_name", type=str, dest="folder_name", default="warn",
 						metavar="NAME", help="base folder name (default: '%(default)s')")
@@ -42,16 +43,16 @@ if __name__ == '__main__':
 						metavar="NAME", help="ignore folder name (default: '%(default)s')")
 	parser.add_argument("--prefix", type=str, dest="prefix", default="",
 						metavar="STR", help="include guard prefix (default: '%(default)s')")
-	parser.add_argument("--header", type=str, dest="header", default=None,
+	parser.add_argument("--header", type=Path, dest="header", default=None,
 						metavar = "FILE", help="optional header file to include at start of each file")
 
-	parser.add_argument("--templates", type=str, dest="templates", default=sdir() + "/templates",
+	parser.add_argument("--templates", type=Path, dest="templates", default=sdir() / "templates",
 						metavar="DIR", help="template directory, should contain a 'template', 'push', and 'pop' file (default: '%(default)s')")
-	parser.add_argument("--gcc_warnings", type=str, dest="gcc_warnings", default=sdir() + "/ext/barro/gcc",
+	parser.add_argument("--gcc_warnings", type=Path, dest="gcc_warnings", default=sdir() / "ext/barro/gcc",
 						metavar="DIR", help="GCC warnings directory (default: '%(default)s')")
-	parser.add_argument("--clang_warnings", type=str, dest="clang_warnings", default=sdir() + "/ext/barro/clang",
+	parser.add_argument("--clang_warnings", type=Path, dest="clang_warnings", default=sdir() / "ext/barro/clang",
 						metavar="DIR", help="Clang warnings directory (default: '%(default)s')")
-	parser.add_argument("--vs_warnings", type=str, dest="vs_warnings", default=sdir() + "/ext/VS",
+	parser.add_argument("--vs_warnings", type=Path, dest="vs_warnings", default=sdir() / "ext/VS",
 						metavar="DIR", help="VS warnings directory (default: '%(default)s')")
 
 	args = parser.parse_args()
@@ -75,15 +76,15 @@ if __name__ == '__main__':
 			header = f.read()
 
 	# Create output directories
-	base = os.path.abspath(args.output_dir)
-	if not os.path.exists(base): os.mkdir(base)
-	warn_dir = base + "/" + args.folder_name
-	if not os.path.exists(warn_dir): os.mkdir(warn_dir)
-	ignore_dir = warn_dir + "/" + args.ignore_name
-	if not os.path.exists(ignore_dir): os.mkdir(ignore_dir)
+	base = args.output_dir.absolute()
+	base.mkdir(parents=True, exist_ok=True)
+	warn_dir = base / args.folder_name
+	warn_dir.mkdir(parents=True, exist_ok=True)
+	ignore_dir = warn_dir / args.ignore_name
+	ignore_dir.mkdir(parents=True, exist_ok=True)
 
 	# Gnerate warnings
-	with open(args.templates + "/template", "r") as f:
+	with open(args.templates / "template", "r") as f:
 		template = f.read()
 		for name, w in table.items():
 			guard_str = "WARN_IGNORE_" + toMacro(name)
@@ -94,11 +95,11 @@ if __name__ == '__main__':
 				prefix = args.prefix, 
 				guard = guard_str,
 				contents = w.format())
-			with open(ignore_dir + "/" + name, "w") as o: 
+			with open(ignore_dir / name, "w") as o: 
 				o.write(contents)
 
 	# Generate igmore all
-	with open(args.templates + "/template", "r") as f:
+	with open(args.templates / "template", "r") as f:
 		template = f.read()
 		contents = header + template.format(
 				folder = args.folder_name, 
@@ -110,24 +111,24 @@ if __name__ == '__main__':
 					vs=warn.warning.vs_all(table), 
 					clang=warn.warning.clang_all, 
 					gcc=warn.warning.gcc_all(table)))
-		with open(ignore_dir + "/all", "w") as o: 
+		with open(ignore_dir / "all", "w") as o: 
 			o.write(contents)
 
 	# Generate push
-	with open(args.templates + "/push", "r") as f:
+	with open(args.templates / "push", "r") as f:
 		push_template = f.read()
 		contents = header + push_template.format(prefix = args.prefix, folder = args.folder_name)
-		with open(warn_dir + "/push", "w") as o: o.write(contents)
+		with open(warn_dir / "push", "w") as o: o.write(contents)
 
 	# Generate pop
-	with open(args.templates + "/pop", "r") as f:
+	with open(args.templates / "pop", "r") as f:
 		pop_template = f.read()
 		undefs = "\n".join([args.prefix + "#undef WARN_IGNORE_" + toMacro(name) for name in sorted(table.keys())])
 		contents = header + pop_template.format(prefix = args.prefix, folder = args.folder_name, undefs = undefs)
-		with open(warn_dir + "/pop", "w") as o: o.write(contents)
+		with open(warn_dir / "pop", "w") as o: o.write(contents)
 
 	# Generate table
-	with open(warn_dir + "/warnings.md", "w") as o:
+	with open(warn_dir / "warnings.md", "w") as o:
 		cols = ["name", "clang", "gcc", "vs"]
 		rows = []
 		for name, ws in sorted(table.items(), key=lambda x: x[0]):

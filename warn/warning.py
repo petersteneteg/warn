@@ -1,5 +1,6 @@
 import re
 import itertools
+from pathlib import Path
 
 # Templates:
 # Ref: http://nadeausoftware.com/articles/2012/10/c_c_tip_how_detect_compiler_name_and_version_using_compiler_predefined_macros
@@ -44,7 +45,7 @@ template = \
 """.strip()
 
 class Warning:
-	def	__init__(self, compiler, name, version = None, desc = None):
+	def	__init__(self, compiler:str, name:str, version = None, desc = None):
 		self.compiler = compiler
 		self.name = name
 		self.desc = desc if desc != None else name
@@ -63,7 +64,7 @@ class Warning:
 			return vs_warning.format(name = self.name[1:], version = "".join([str(x) for x in v]))
 
 class WarningSet:
-	def __init__(self, name, warnings):
+	def __init__(self, name:str, warnings):
 		self.name = name
 		self.warnings = warnings
 
@@ -80,7 +81,7 @@ class WarningSet:
 		return template.format(**strs)
 
 
-def make_warning_set(parsers, name, clang_name, gcc_name, vs_name):
+def make_warning_set(parsers, name:str, clang_name:str, gcc_name:str, vs_name:str):
 	warnings = {}
 
 	def add_warning(comp, w_name):
@@ -99,13 +100,13 @@ def make_warning_set(parsers, name, clang_name, gcc_name, vs_name):
 
 	return WarningSet(name, warnings)
 
-def parse_warning_table(file, parsers):
+def parse_warning_table(file:Path, parsers):
 	warning_sets = {}
 	with open(file, "r") as f:
 		f.readline() # skip header
 		f.readline() # skip header
 		for line in f:
-			line_match = re.match("\s*(?P<name>\S+)\s*\|\s*(?P<clang>\S+)\s*\|\s*(?P<gcc>\S+)\s*\|\s*(?P<vs>\S+)\s*\|", line)
+			line_match = re.match(r"\s*(?P<name>\S+)\s*\|\s*(?P<clang>\S+)\s*\|\s*(?P<gcc>\S+)\s*\|\s*(?P<vs>\S+)\s*\|", line)
 			if line_match:
 				ws = make_warning_set(parsers, 
 					name = line_match.group("name"), 
