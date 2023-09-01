@@ -51,13 +51,13 @@ class BaseWarningParser(WarningParser):
 class ClangWarningParser(BaseWarningParser):
 	def __init__(self, compiler:str, path:Path):
 		BaseWarningParser.__init__(self, compiler, path)
-		files = self.path.glob("warnings-clang-unique-*.txt")
+		files = self.path.glob("warnings-unique-*.txt")
 		self.warnings = self.parse_warning_files(files)
 
 class GCCWarningParser(BaseWarningParser):
 	def __init__(self, compiler:str, path:Path):
 		BaseWarningParser.__init__(self, compiler, path)
-		files = self.path.glob("warnings-gcc-unique-*.txt")
+		files = self.path.glob("warnings-unique-*.txt")
 		self.warnings = self.parse_warning_files(files)
 
 class VSWarningParser(WarningParser):
