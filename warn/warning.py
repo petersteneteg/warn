@@ -55,13 +55,13 @@ class Warning:
 		return "{:10} {:30} {:10} {:50}".format(self.compiler, self.name, str(self.version), str(self.desc))
 
 	def format(self):
-		v = self.version.version
+		v = self.version
 		if self.compiler == "clang":
-			return clang_warning.format(name = self.name, clang_major = v[0], clang_minor = (v[1] if len(v) >= 2 else 0))
+			return clang_warning.format(name = self.name, clang_major = v.major, clang_minor = v.minor)
 		if self.compiler == "gcc":
-			return gcc_warning.format(name = self.name, gcc_major = v[0], gcc_minor = (v[1] if len(v) >= 2 else 0))
+			return gcc_warning.format(name = self.name, gcc_major = v.major, gcc_minor = v.minor)
 		if self.compiler == "vs":
-			return vs_warning.format(name = self.name[1:], version = "".join([str(x) for x in v]))
+			return vs_warning.format(name = self.name[1:], version = str(v).replace('.', ''))
 
 class WarningSet:
 	def __init__(self, name:str, warnings):
@@ -126,7 +126,7 @@ def vs_all(table):
 	vs.sort(key=lambda w: w.version)
 	def gen():
 		for version, warnings in itertools.groupby(vs, key=lambda w:w.version):
-			verstr = ''.join(str(i) for i in version.version)
+			verstr = str(version).replace('.', '')
 			res = f"#    if (_MSC_FULL_VER >= {verstr:0<9})\n"
 			for sublist in partition(warnings, 13):
 				names = ' '.join(i.name[1:] for i in sublist)
@@ -140,9 +140,9 @@ def gcc_all(table):
 	gcc.sort(key=lambda w: w.version)
 	def gen():
 		for version, warnings in itertools.groupby(gcc, key=lambda w: w.version):
-			v = version.version
+			v = version
 			res = "#    if __GNUC__ > {major} || (__GNUC__ == {major}  && __GNUC_MINOR__ >= {minor})\n"
-			res = res.format(major = v[0], minor=(v[1] if len(v) >= 2 else 0))
+			res = res.format(major = v.major, minor=v.minor)
 			for w in warnings:
 				res += f"#        pragma GCC diagnostic ignored \"-W{w.name}\"\n"
 			res += "#    endif"
