@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 
-from packaging.version import Version
+from . import version
 
 from . import warning
 
@@ -27,7 +27,7 @@ class BaseWarningParser(WarningParser):
 		warndict = {}
 		for file in files:
 			if match := re.match(r".*warnings-.*-(\d+(\.\d+)?)\.txt", str(file)):
-				version = Version(match.group(1))
+				compilerVersion = version.Version(match.group(1))
 				with open(file, 'r') as f:
 					for line in f:
 						line = line.split("#")[0].strip()
@@ -42,10 +42,10 @@ class BaseWarningParser(WarningParser):
 							name = warning_match.group(1)
 							if len(name) == 0: continue
 							if name in warndict:
-								if version < warndict[name].version:
-									warndict[name].version = version
+								if compilerVersion < warndict[name].version:
+									warndict[name].version = compilerVersion
 							else: 
-								warndict[name] = warning.Warning(self.compiler, name, version)
+								warndict[name] = warning.Warning(self.compiler, name, compilerVersion)
 		return warndict
 
 class ClangWarningParser(BaseWarningParser):
@@ -69,22 +69,22 @@ class VSWarningParser(WarningParser):
 		if name in self.warnings:
 			return True, self.warnings[name]
 		elif re.match(r"C2\d\d\d\d", name): # c++ core guideline check
-			return True, warning.Warning(self.compiler, name, Version("15"), name)
+			return True, warning.Warning(self.compiler, name, version.Version("15"), name)
 		else:
 			return False, None
 
 	def parse_vs_warnings_versions(self, file:Path):
 		warndict = {}
-		version  = Version("0")
+		compilerVersion = version.Version("0")
 		with open(file, 'r') as f:
 			for line in f:
 				if version_match := re.match(r"These warnings.*`\/Wv:([\d.]+)`.", line):
-					version  = Version(version_match.group(1))
+					compilerVersion  = version.Version(version_match.group(1))
 				if warning_match := re.match(r"\|\s*(C\d+)\s*\|\s*`(.*)`", line):
 					name = warning_match.group(1)
 					desc = warning_match.group(2)
 					if name not in warndict:
-						warndict[name] = warning.Warning(self.compiler, name, version, desc)
+						warndict[name] = warning.Warning(self.compiler, name, compilerVersion, desc)
 		return warndict
 
 	def parse_vs_warnings(self, warning_dir:Path):
@@ -100,7 +100,7 @@ class VSWarningParser(WarningParser):
 						desc = warning_match.group(4)
 						if name not in warndict:
 							# We guess that they have been there a long time.
-							warndict[name] = warning.Warning(self.compiler, name, Version("13"), desc) 
+							warndict[name] = warning.Warning(self.compiler, name, version.Version("13"), desc) 
 
 		cppcheck2 =  warning_dir / "CoreCheckers.md"
 		with open(cppcheck2, 'r') as f:
@@ -109,6 +109,6 @@ class VSWarningParser(WarningParser):
 					name = "C" + warning_match.group(2)
 					desc = warning_match.group(2).lower()
 					# don't have a version for the CPP-check stuff, put it in 2017...
-					warndict[name] = warning.Warning(self.compiler, name, Version("15"), desc)
+					warndict[name] = warning.Warning(self.compiler, name, version.Version("15"), desc)
 
 		return warndict
